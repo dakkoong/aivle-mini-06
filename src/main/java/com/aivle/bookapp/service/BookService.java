@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -30,6 +32,16 @@ public class BookService {
     // 교안 p.170: CUD 메서드 - @Transactional 적용
     @Transactional
     public Book create(Book book) {
+        String now = now();
+        if (book.getCreatedAt() == null) {
+            book.setCreatedAt(now);
+        }
+        if (book.getUpdatedAt() == null) {
+            book.setUpdatedAt(now);
+        }
+        if (book.getLikeCount() == null) {
+            book.setLikeCount(0);
+        }
         return bookRepository.save(book);
     }
 
@@ -64,6 +76,8 @@ public class BookService {
         }
         if (book.getUpdatedAt() != null) {
             existing.setUpdatedAt(book.getUpdatedAt());
+        } else {
+            existing.setUpdatedAt(now());
         }
         
         return bookRepository.save(existing);
@@ -90,10 +104,18 @@ public class BookService {
         return bookRepository.findByTitleAndAuthor(title, author);
     }
 
+    // 교안 p.57: AI 표지 생성 결과(Data URL)를 도서 정보에 저장
     @Transactional
     public Book updateCoverImage(Long id, String coverImageUrl){
+        if (coverImageUrl == null || coverImageUrl.isBlank()) {
+            throw new IllegalArgumentException("coverImageUrl is required");
+        }
         Book book = findById(id);
         book.setCoverImageUrl(coverImageUrl);
+        book.existing.setUpdatedAt(now());
         return bookRepository.save(book);
+    }
+    private String now() {
+        return LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 }
