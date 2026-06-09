@@ -14,9 +14,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     
     // 교안 p.129: Containing - 부분 일치 검색
     List<Book> findByTitleContaining(String keyword);
-    
-    // 교안 p.130: And - 복합 조건 검색
-    List<Book> findByTitleAndAuthor(String title, String author);
 
     // 저자별 검색
     List<Book> findByAuthorContaining(String author);
