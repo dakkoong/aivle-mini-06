@@ -11,4 +11,6 @@ public class BookListResponse {
     private List<BookResponse> content;
     private int totalPages;
     private int currentPage;
+
+
 }
