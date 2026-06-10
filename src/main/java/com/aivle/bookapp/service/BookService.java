@@ -25,14 +25,25 @@ public class BookService {
     private final BookRepository bookRepository;
 
     // 교안 p.171: 조회 메서드 - readOnly = true 최적화
+    //반환형 Page<Book> 으로 수정
     @Transactional(readOnly = true)     // 검색어값 없을 시 작동
-    public List<Book> findAll(int page) {
-        Pageable pageable = PageRequest.of(Math.max(0, page-1), 12);
-        return bookRepository.findAll(pageable).getContent();
+    public Page<Book> findAll(int page) {
+        Pageable pageable = PageRequest.of(Math.max(0, page - 1), 12,
+                Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        Page<Book> bookPage = bookRepository.findAll(pageable);
+
+        if (bookPage.isEmpty() && bookPage.getTotalPages() > 0) {       // page 값 초과 시 예외 처리(마지막 페이지로 이동)
+            Pageable lastPageable = PageRequest.of(bookPage.getTotalPages() - 1, 12,
+                    Sort.by(Sort.Direction.DESC, "createdAt"));
+            bookPage = bookRepository.findAll(lastPageable);
+        }
+
+        return bookPage;
     }
 
     @Transactional(readOnly = true)     // 검색 시 작동
-    public  List<Book> search(
+    public  Page<Book> search(
             String searchType,  //검색 타입 (all, title, author 등등)
             String keyWord,     //검색 키워드
             String sortBy,      //정렬 기준 (등록 시간, 제목, 추천 수 등)
@@ -52,7 +63,12 @@ public class BookService {
 
         Page<Book> bookPage = bookRepository.findAll(spec, pageable);
 
-        return bookPage.getContent();
+        if (bookPage.isEmpty() && bookPage.getTotalPages() > 0) {   // page 값 초과 시 예외 처리
+            Pageable lastPageable = PageRequest.of(bookPage.getTotalPages() - 1, 12, sort);
+            bookPage = bookRepository.findAll(spec, lastPageable);
+        }
+
+        return bookPage;
     }
 
     @Transactional(readOnly = true)

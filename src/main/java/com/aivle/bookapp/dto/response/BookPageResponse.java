@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class BookListResponse {
+public class BookPageResponse {
     private List<BookResponse> content;
     private int totalPages;
     private int currentPage;
