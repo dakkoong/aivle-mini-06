@@ -4,7 +4,13 @@ import com.aivle.bookapp.domain.Book;
 import com.aivle.bookapp.exception.BookAlreadyExistsException;
 import com.aivle.bookapp.exception.BookNotFoundException;
 import com.aivle.bookapp.repository.BookRepository;
+import com.aivle.bookapp.specification.BookSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +25,34 @@ public class BookService {
     private final BookRepository bookRepository;
 
     // 교안 p.171: 조회 메서드 - readOnly = true 최적화
-    @Transactional(readOnly = true)
-    public List<Book> findAll() {
-        return bookRepository.findAll();
+    @Transactional(readOnly = true)     // 검색어값 없을 시 작동
+    public List<Book> findAll(int page) {
+        Pageable pageable = PageRequest.of(Math.max(0, page-1), 12);
+        return bookRepository.findAll(pageable).getContent();
+    }
+
+    @Transactional(readOnly = true)     // 검색 시 작동
+    public  List<Book> search(
+            String searchType,  //검색 타입 (all, title, author 등등)
+            String keyWord,     //검색 키워드
+            String sortBy,      //정렬 기준 (등록 시간, 제목, 추천 수 등)
+            String order,       //DESC/ASC
+            int page            //페이징(페이지당 12행)
+    ){
+        Sort.Direction direction = "desc".equalsIgnoreCase(order) ?
+                Sort.Direction.DESC : Sort.Direction.ASC;
+
+        if (sortBy.equals("time"))
+            sortBy = "createdAt";
+        Sort sort = Sort.by(direction, sortBy);
+
+        Pageable pageable = PageRequest.of(Math.max(0, page-1), 12, sort);
+
+        Specification<Book> spec = BookSpecification.search(searchType, keyWord);
+
+        Page<Book> bookPage = bookRepository.findAll(spec, pageable);
+
+        return bookPage.getContent();
     }
 
     @Transactional(readOnly = true)

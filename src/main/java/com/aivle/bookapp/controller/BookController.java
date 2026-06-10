@@ -31,8 +31,20 @@ public class BookController {
 
     // 교안 p.157: GET /books - 목록 조회
     @GetMapping
-    public List<BookResponse> getAll() {
-        return toResponseList(bookService.findAll());
+    public List<BookResponse> getAll(
+            @RequestParam(defaultValue = "all") String searchType,
+            @RequestParam(defaultValue = "") String keyWord,
+            @RequestParam(defaultValue = "time") String sortBy,
+            @RequestParam(defaultValue = "desc") String order,
+            @RequestParam(defaultValue = "1") int page
+    ) {
+        List<BookResponse> responseList;
+        if(keyWord.isBlank())
+            responseList = toResponseList(bookService.findAll(page));
+        else{
+            responseList = toResponseList(bookService.search(searchType, keyWord, sortBy, order, page));
+        }
+        return responseList;
     }
 
     // 교안 p.158: GET /books/{id} - 상세 조회
