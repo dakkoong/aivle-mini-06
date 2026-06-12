@@ -140,6 +140,9 @@ public class UserService {
             user.setPassword(request.getPassword());
         }
 
-        return UserProfileResponse.from(user);
+        // 정보가 변경되었으므로, 변경된 nickname/email 등이 적용된 새 Access Token 발급
+        String newAccessToken = jwtUtil.createAccessToken(user);
+
+        return UserProfileResponse.from(user, newAccessToken);
     }
 }
