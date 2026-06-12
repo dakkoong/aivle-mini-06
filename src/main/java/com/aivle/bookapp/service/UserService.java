@@ -143,8 +143,13 @@ public class UserService {
             user.setEmail(request.getEmail());
         }
         // 비밀번호 변경 요청이 존재하고 유효한 경우 업데이트
-        if (request.getPassword() != null && !request.getPassword().isBlank()) {
-            user.setPassword(request.getPassword());
+        if (request.getNewPassword() != null && !request.getNewPassword().isBlank()) {
+            String newPW_encoded = passwordEncoder.encode(request.getNewPassword());
+            String oldPW = request.getOldPassword();
+
+            if(!passwordEncoder.matches(oldPW, user.getPassword()))
+                throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            user.setPassword(newPW_encoded);
         }
 
         // 정보가 변경되었으므로, 변경된 nickname/email 등이 적용된 새 Access Token 발급

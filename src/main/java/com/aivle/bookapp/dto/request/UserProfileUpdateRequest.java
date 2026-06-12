@@ -15,5 +15,6 @@ public class UserProfileUpdateRequest {
 
     private String nickname; // 수정할 사용자 닉네임 (선택)
     private String email;    // 수정할 사용자 이메일 (선택)
-    private String password; // 수정할 사용자 비밀번호 (선택)
+    private String oldPassword; // 수정할 사용자 이메일 (선택)
+    private String newPassword; // 수정할 사용자 비밀번호 (선택)
 }
