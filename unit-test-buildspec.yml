@@ -3,20 +3,14 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      java: corretto17
       nodejs: 20
 
   pre_build:
     commands:
-      - echo "=== directory check ==="
-      - ls -al
-      - ls -al frontend
-      - ls -al backend
       - cd frontend
       - npm install
-      - cd ../backend
-      - chmod +x gradlew
 
   build:
     commands:
-      - ng test --no-watch --no-progress --browsers=ChromeHeadlessCI
+      - cd frontend
+      - npx ng test --no-watch --no-progress
