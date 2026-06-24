@@ -29,6 +29,8 @@ phases:
     commands:
       - echo "Build completed"
       - cd $CODEBUILD_SRC_DIR
+      - mkdir -p dist
+      - cp -r frontend/dist/* dist/ 2>/dev/null || cp -r frontend/dist/.[!.]* dist/ 2>/dev/null || true
 
 artifacts:
   files:
