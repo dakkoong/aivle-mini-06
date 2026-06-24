@@ -32,5 +32,5 @@ artifacts:
   base-directory: frontend/dist
   files:
     - '**/*'
-    # - ../../backend/build/libs/*.jar
+    - ../../backend/build/libs/*.jar
   discard-paths: no
