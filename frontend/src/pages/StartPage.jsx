@@ -25,7 +25,7 @@ function StartPage({
                 도서 목록
               </button>
 
-              {/* <button
+              <button
                 type="button"
                 className="create-button"
                 onClick={onMoveToCreate}
@@ -40,7 +40,7 @@ function StartPage({
                   <path d="M5 12h14" />
                 </svg>
                 <span>새 도서 등록</span>
-              </button> */}
+              </button>
             </div>
           </div>
 
