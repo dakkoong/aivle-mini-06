@@ -8,6 +8,7 @@ import com.aivle.bookapp.dto.request.LikeRequest;
 import com.aivle.bookapp.dto.response.BookPageResponse;
 import com.aivle.bookapp.dto.response.BookResponse;
 import com.aivle.bookapp.service.AiRecommendationService;
+import com.aivle.bookapp.service.CommentService;
 import com.aivle.bookapp.service.BookService;
 import com.aivle.bookapp.util.JwtUtil;
 import jakarta.validation.Valid;
@@ -28,6 +29,7 @@ public class BookController {
 
     private final BookService bookService;
     private final AiRecommendationService aiRecommendationService;
+    private final CommentService commentService;
     private final JwtUtil jwtUtil;
 
     // 교안 p.157: GET /books - 목록 조회
@@ -60,8 +62,14 @@ public class BookController {
 
     // 교안 p.158: GET /books/{id} - 상세 조회
     @GetMapping("/{id}")
-    public BookResponse getBook(@PathVariable Long id) {
-        return BookResponse.from(bookService.findById(id));
+    public BookResponse getBook(
+            @PathVariable Long id,
+            @AuthenticationPrincipal String loginUserId
+    ) {
+        Book book = bookService.findById(id);
+        boolean liked = bookService.isLiked(id, loginUserId);
+
+        return BookResponse.from(book, liked);
     }
 
     // 신규 도서 3개
@@ -95,7 +103,7 @@ public class BookController {
     // 교안 p.167: DELETE /books/{id} - 삭제 (204 No Content)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id, @AuthenticationPrincipal String loginUserId) {
-
+        commentService.deleteCommentAll(id);
         bookService.delete(id, loginUserId);
         return ResponseEntity.noContent().build();
     }
@@ -147,7 +155,10 @@ public class BookController {
             @RequestBody LikeRequest request,
             @AuthenticationPrincipal String loginUserId
     ) {
-        return BookResponse.from(bookService.like(id, request.getUserId(), loginUserId));
+        Book book = bookService.like(id, request.getUserId(), loginUserId);
+        boolean liked = bookService.isLiked(id, loginUserId);
+
+        return BookResponse.from(book, liked);
     }
 
     @GetMapping("/ai-recommendation")
@@ -155,4 +166,7 @@ public class BookController {
         Map<String, Object> recommendation = aiRecommendationService.getCachedRecommendation();
         return ResponseEntity.ok(recommendation);
     }
+
+
 }
+

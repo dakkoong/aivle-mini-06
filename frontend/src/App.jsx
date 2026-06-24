@@ -247,8 +247,9 @@ function App() {
     }
   }, []);
 
-  const fetchComments = async (bookId, currentSort) => {
+  const fetchComments = useCallback(async (bookId, currentSort) => {
     if (!bookId) return;
+
     try {
       const res = await fetch(`${API_URL}/${bookId}/comments?sort=${currentSort}`);
       if (res.ok) {
@@ -258,7 +259,7 @@ function App() {
     } catch (error) {
       console.error("댓글 조회 오류:", error);
     }
-  };
+  }, []);
 
   const fetchAIRecommendations = async () => {
     try {
@@ -451,10 +452,26 @@ function App() {
     }
   };
 
-  const moveToDetail = (book) => {
+  const moveToDetail = async (book) => {
     setSelectedId(book.id);
     setMessage("");
     setPage("detail");
+
+    try {
+      const res = await authFetch(`${API_URL}/${book.id}`);
+
+      if (!res.ok) return;
+
+      const detailBook = normalizeBook(await res.json());
+
+      setBooks((prevBooks) =>
+        prevBooks.map((item) =>
+          item.id === detailBook.id ? detailBook : item
+        )
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const moveToUpdate = (book) => {
@@ -551,7 +568,7 @@ function App() {
     }
 
     const bookId = String(book.id);
-    const wasLiked = likedBookIds.has(bookId);
+    const beforeLikeCount = book.likeCount || 0;
 
     try {
       const res = await authFetch(`${API_URL}/${book.id}/like`, {
@@ -569,6 +586,8 @@ function App() {
       }
 
       const data = normalizeBook(await res.json());
+      const afterLikeCount = data.likeCount || 0;
+      const nowLiked = afterLikeCount > beforeLikeCount;
 
       setBooks((prevBooks) =>
         prevBooks.map((item) => (item.id === data.id ? data : item)),
@@ -577,19 +596,19 @@ function App() {
       setLikedBookIds((prevIds) => {
         const nextIds = new Set(prevIds);
 
-        if (wasLiked) {
-          nextIds.delete(bookId);
-        } else {
+        if (nowLiked) {
           nextIds.add(bookId);
+        } else {
+          nextIds.delete(bookId);
         }
 
         return nextIds;
       });
 
       showToast(
-        wasLiked
-          ? `${data.title} 추천이 취소되었습니다.`
-          : `${data.title} 도서를 추천했습니다.`,
+        nowLiked
+          ? `${data.title} 도서를 추천했습니다.`
+          : `${data.title} 추천이 취소되었습니다.`,
       );
       setPage("detail");
     } catch (error) {
@@ -924,7 +943,7 @@ function App() {
           onDelete={handleDeleteBook}
           onLikeBook={handleLikeBook}
           currentUser={currentUser}
-          isLiked={selectedBook ? likedBookIds.has(String(selectedBook.id)) : false}
+          isLiked={selectedBook ? Boolean(selectedBook.liked) : false}
 
           comments={comments}
           sortBy={sortBy}
