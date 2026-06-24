@@ -1,8 +1,10 @@
 version: 0.0
 os: linux
+
 files:
-  - source: dist
+  - source: frontend/dist
     destination: /var/www/webprojec
+
 permissions:
   - object: /var/www/webprojec
     pattern: '**'
@@ -12,6 +14,7 @@ permissions:
     type:
       - file
       - directory
+
 hooks:
   ApplicationStart:
     - location: deploy-scripts/application-start-hook.sh
