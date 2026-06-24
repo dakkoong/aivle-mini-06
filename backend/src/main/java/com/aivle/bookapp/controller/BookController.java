@@ -8,6 +8,7 @@ import com.aivle.bookapp.dto.request.LikeRequest;
 import com.aivle.bookapp.dto.response.BookPageResponse;
 import com.aivle.bookapp.dto.response.BookResponse;
 import com.aivle.bookapp.service.AiRecommendationService;
+import com.aivle.bookapp.service.CommentService;
 import com.aivle.bookapp.service.BookService;
 import com.aivle.bookapp.util.JwtUtil;
 import jakarta.validation.Valid;
@@ -28,6 +29,7 @@ public class BookController {
 
     private final BookService bookService;
     private final AiRecommendationService aiRecommendationService;
+    private final CommentService commentService;
     private final JwtUtil jwtUtil;
 
     // 교안 p.157: GET /books - 목록 조회
@@ -95,7 +97,7 @@ public class BookController {
     // 교안 p.167: DELETE /books/{id} - 삭제 (204 No Content)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id, @AuthenticationPrincipal String loginUserId) {
-
+        commentService.deleteCommentAll(id);
         bookService.delete(id, loginUserId);
         return ResponseEntity.noContent().build();
     }

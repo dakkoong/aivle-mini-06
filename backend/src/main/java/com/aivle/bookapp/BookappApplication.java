@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.util.TimeZone;
 
 @EnableScheduling
 @SpringBootApplication
+@EnableAsync
 public class BookappApplication {
 	@PostConstruct
 	public void init() {
