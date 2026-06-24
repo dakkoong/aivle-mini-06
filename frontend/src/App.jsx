@@ -722,7 +722,7 @@ function App() {
     if (!window.confirm("정말로 이 댓글을 삭제하시겠습니까?")) return;
     try {
       const authHeader = authToken?.startsWith("Bearer ") ? authToken : `Bearer ${authToken}`;
-      const res = await fetch(`/api/${bookId}/comments/${commentId}`, {
+      const res = await fetch(`/api/books/${bookId}/comments/${commentId}`, {
         method: "DELETE",
         headers: { Authorization: authHeader },
       });
@@ -739,7 +739,7 @@ function App() {
   const handleCommentLike = async (bookId, commentId) => {
     try {
       const authHeader = authToken?.startsWith("Bearer ") ? authToken : `Bearer ${authToken}`;
-      const res = await fetch(`/api/${bookId}/comments/${commentId}/like`, {
+      const res = await fetch(`/api/books/${bookId}/comments/${commentId}/like`, {
         method: "POST",
         headers: { Authorization: authHeader },
       });
