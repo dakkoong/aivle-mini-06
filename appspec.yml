@@ -3,6 +3,9 @@ os: linux
 files:
   - source: frontend/dist/
     destination: /var/www/my-angular-project
+
+  - source: backend/build/libs/
+    destination: /home/ec2-user/backend
 permissions:
   - object: /var/www/my-angular-project
     pattern: '**'
