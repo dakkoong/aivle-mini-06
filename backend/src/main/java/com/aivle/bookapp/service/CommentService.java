@@ -79,6 +79,15 @@ public class CommentService {
     }
 
     @Transactional
+    public void deleteCommentAll(Long id) {
+        List<Comment> comments = commentRepository.findByBookIdOrderByCreatedAtDesc(id);
+        for (Comment comment : comments) {
+            commentLikeRepository.deleteByCommentId(comment.getId());
+            commentRepository.delete(comment);
+        }
+    }
+
+    @Transactional
     public boolean toggleCommentLike(Long commentId, String userId) {
         // 1. 이미 좋아요를 눌렀는지 확인
         Optional<CommentLike> alreadyLike = commentLikeRepository.findByCommentIdAndUserUserId(commentId, userId);
