@@ -1,18 +1,20 @@
 package com.aivle.bookapp.config;
 
-import com.aivle.bookapp.filter.JwtAuthenticationFilter;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.aivle.bookapp.filter.JwtAuthenticationFilter;
+
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
@@ -47,17 +49,17 @@ public class SecurityConfig {
                 ))
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register", "/api/users/login", "/api/users/refresh").permitAll()
+                        .requestMatchers("/users/register", "/users/login", "/users/refresh").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/books", "/books/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/books").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/books/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/books").authenticated()
-                        .requestMatchers(HttpMethod.PATCH, "/api/books/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/books/*/comments").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/books/*/comments").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/books/*/comments/*").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/books/*/comments/*/like").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/books", "/books/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/books").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/books/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/books").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/books/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/books/*/comments").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/books/*/comments").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/books/*/comments/*").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/books/*/comments/*/like").authenticated()
                         .anyRequest().authenticated()
                 )
 
