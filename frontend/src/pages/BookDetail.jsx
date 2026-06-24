@@ -32,7 +32,7 @@ function BookDetail({
     if (book?.id) {
       onCommentFetch(book.id, sortBy);
     }
-  }, [book?.id, sortBy, onCommentFetch]);
+  }, [book?.id, sortBy]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
