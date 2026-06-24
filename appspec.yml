@@ -1,0 +1,42 @@
+version: 0.0
+os: linux
+
+files:
+  - source: frontend/dist
+    destination: /usr/share/nginx/html
+  - source: backend/build/libs/bookapp-0.0.1-SNAPSHOT.jar
+    destination: /opt/aivle-mini-06/backend
+
+file_exists_behavior: OVERWRITE
+
+permissions:
+  - object: /usr/share/nginx/html
+    pattern: "**"
+    mode: "0755"
+    owner: root
+    group: root
+    type:
+      - file
+      - directory
+  - object: /opt/aivle-mini-06
+    pattern: "**"
+    mode: "0755"
+    owner: root
+    group: root
+    type:
+      - file
+      - directory
+
+hooks:
+  ApplicationStop:
+    - location: deploy-scripts/application-stop-hook.sh
+      timeout: 300
+      runas: root
+  BeforeInstall:
+    - location: deploy-scripts/before-install-hook.sh
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: deploy-scripts/application-start-hook.sh
+      timeout: 300
+      runas: root
