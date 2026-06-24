@@ -198,7 +198,7 @@ function App() {
   const fetchComments = async (bookId, currentSort) => {
     if (!bookId) return;
     try {
-      const res = await fetch(`/api/${bookId}/comments?sort=${currentSort}`);
+      const res = await fetch(`/api/books/${bookId}/comments?sort=${currentSort}`);
       if (res.ok) {
         const data = await res.json();
         setComments(data);
