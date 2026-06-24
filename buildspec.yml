@@ -33,4 +33,7 @@ artifacts:
   files:
     - backend/build/libs/*.jar
     - frontend/dist/**/*
+    - 'dist/test-angular-project/**/*'
+    - appspec.yml
+    - 'deploy-scripts/**/*'
   discard-paths: no
