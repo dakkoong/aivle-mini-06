@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,6 +66,11 @@ public class AiRecommendationService implements ApplicationRunner {
         return result;
     }
 
+    @Async
+    public void refreshRecommendationAsync() {
+        updateAiRecommendation();
+    }
+    
     @Scheduled(cron = "0 0 0 1 * *", zone = "Asia/Seoul")
     @Transactional
     public void updateAiRecommendation() {

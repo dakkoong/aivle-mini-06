@@ -30,6 +30,7 @@ public class BookService {
     private final BookRepository bookRepository;
     private final LikeRepository likeRepository;
     private final UserRepository userRepository;
+    private final AiRecommendationService aiRecommendationService; 
 
     // 교안 p.171: 조회 메서드 - readOnly = true 최적화
     //반환형 Page<Book> 으로 수정
@@ -106,6 +107,7 @@ public class BookService {
         if (bookRepository.findIdByTitleAndAuthor(book.getTitle(), realUser).isPresent()){
             throw new BookAlreadyExistsException(book.getTitle());
         }
+        aiRecommendationService.refreshRecommendationAsync();
         return bookRepository.save(book);
     }
 
