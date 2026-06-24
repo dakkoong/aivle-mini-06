@@ -19,7 +19,7 @@ import {
   signup as signupUser,
   updateMyProfile,
 } from "./api/authApi";
-const API_URL = import.meta.env.VITE_BOOK_API_URL || "/api/books";
+const API_URL = import.meta.env.VITE_BOOK_API_URL || "http://localhost:8080/books";
 
 const normalizeBook = (book) => {
   if (!book) return book;
