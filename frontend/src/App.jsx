@@ -8,6 +8,7 @@ import StartPage from "./pages/StartPage";
 import AuthPage from "./pages/AuthPage";
 import MyPage from "./pages/MyPage";
 import Header from "./components/Header";
+import compressCoverImage from "./utils/compressCoverImage";
 import {
   clearAuth,
   getMyPage,
@@ -20,7 +21,6 @@ import {
   updateMyProfile,
 } from "./api/authApi";
 const API_URL = import.meta.env.VITE_BOOK_API_URL || "http://localhost:8080/books";
-
 const normalizeBook = (book) => {
   if (!book) return book;
 
@@ -646,14 +646,17 @@ function App() {
 
   const handleSaveCoverImage = async (book, imageSrc) => {
     try {
+      const uploadImageSrc = await compressCoverImage(imageSrc);
+      const body = JSON.stringify({
+        coverImageUrl: uploadImageSrc,
+      });
+
       const res = await authFetch(`${API_URL}/${book.id}/cover`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          coverImageUrl: imageSrc,
-        }),
+        body,
       });
 
       if (!res.ok) {

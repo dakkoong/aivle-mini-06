@@ -18,7 +18,7 @@
 ### 2. Backend & Database
 * **Framework & Tooling**: Spring Boot 4.0.6, Gradle
 * **Language**: Java 17
-* **Database**: H2 Database (로컬 파일 저장 모드: `jdbc:h2:file:~/bookdb`)
+* **Database**: MySQL
 * **ORM**: Spring Data JPA & Hibernate
 * **Security & Auth**: Spring Security, JWT (Json Web Token), BCrypt 비밀번호 암호화
 * **Utilities**: Lombok, Spring Boot Validation, OpenAI RestClient 연동
@@ -145,14 +145,10 @@ erDiagram
 ```yaml
 spring:
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:file:~/bookdb;  # 로컬 H2 파일 모드
-    username: sa
-    password: 1234
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 jwt:
   secret: aivle-bookapp-jwt-secret-key-2026!
   access-expiration: 3600000    # 1시간
@@ -164,10 +160,6 @@ API 기본 Endpoint 포트는 `8080`입니다.
 ```powershell
 ./gradlew.bat bootRun
 ```
-* **H2 Database Console**: `http://localhost:8080/h2-console`
-  - JDBC URL: `jdbc:h2:file:~/bookdb`
-  - User Name: `sa` / Password: `1234`
-
 ### 3. 프론트엔드 실행 방법
 프론트엔드 소스 디렉토리에서 아래 명령어로 리액트 개발 서버를 시작합니다.
 ```bash
