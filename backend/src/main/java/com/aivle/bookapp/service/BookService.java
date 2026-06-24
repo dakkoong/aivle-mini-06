@@ -274,15 +274,4 @@ public class BookService {
 
         return bookRepository.save(book);
     }
-
-    @Transactional(readOnly = true)
-    public boolean isLiked(Long bookId, String loginUserId) {
-        if (loginUserId == null) {
-            return false;
-        }
-
-        return likeRepository
-                .findByUser_UserIdAndBook_Id(loginUserId, bookId)
-                .isPresent();
-    }
 }

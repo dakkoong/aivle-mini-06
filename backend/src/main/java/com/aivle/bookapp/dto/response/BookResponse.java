@@ -19,7 +19,6 @@ public class BookResponse {
     private Integer likeCount;
     private String createdAt;
     private String updatedAt;
-    private Boolean liked;
 
     public static BookResponse from(Book book) {
         return BookResponse.builder()
@@ -31,23 +30,6 @@ public class BookResponse {
                 .tags(book.getTags())
                 .coverImageUrl(book.getCoverImageUrl())
                 .likeCount(book.getLikeCount())
-                .liked(false)
-                .createdAt(book.getCreatedAt())
-                .updatedAt(book.getUpdatedAt())
-                .build();
-    }
-
-    public static BookResponse from(Book book, boolean liked) {
-        return BookResponse.builder()
-                .id(book.getId())
-                .title(book.getTitle())
-                .author(UserInBookResponse.from(book.getAuthor()))
-                .publisher(book.getPublisher())
-                .content(book.getContent())
-                .tags(book.getTags())
-                .coverImageUrl(book.getCoverImageUrl())
-                .likeCount(book.getLikeCount())
-                .liked(liked)
                 .createdAt(book.getCreatedAt())
                 .updatedAt(book.getUpdatedAt())
                 .build();
