@@ -62,14 +62,8 @@ public class BookController {
 
     // 교안 p.158: GET /books/{id} - 상세 조회
     @GetMapping("/{id}")
-    public BookResponse getBook(
-            @PathVariable Long id,
-            @AuthenticationPrincipal String loginUserId
-    ) {
-        Book book = bookService.findById(id);
-        boolean liked = bookService.isLiked(id, loginUserId);
-
-        return BookResponse.from(book, liked);
+    public BookResponse getBook(@PathVariable Long id) {
+        return BookResponse.from(bookService.findById(id));
     }
 
     // 신규 도서 3개
@@ -155,10 +149,7 @@ public class BookController {
             @RequestBody LikeRequest request,
             @AuthenticationPrincipal String loginUserId
     ) {
-        Book book = bookService.like(id, request.getUserId(), loginUserId);
-        boolean liked = bookService.isLiked(id, loginUserId);
-
-        return BookResponse.from(book, liked);
+        return BookResponse.from(bookService.like(id, request.getUserId(), loginUserId));
     }
 
     @GetMapping("/ai-recommendation")
@@ -166,7 +157,4 @@ public class BookController {
         Map<String, Object> recommendation = aiRecommendationService.getCachedRecommendation();
         return ResponseEntity.ok(recommendation);
     }
-
-
 }
-

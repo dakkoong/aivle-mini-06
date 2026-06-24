@@ -78,7 +78,7 @@ function BookList({
                 )}
               </div>
 
-              {/* <button
+              <button
                 type="button"
                 className="create-button"
                 onClick={onMoveToCreate}
@@ -93,7 +93,7 @@ function BookList({
                   <path d="M5 12h14" />
                 </svg>
                 <span>새 도서 등록</span>
-              </button> */}
+              </button>
             </div>
           </div>
 
