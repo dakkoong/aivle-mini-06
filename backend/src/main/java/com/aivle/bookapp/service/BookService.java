@@ -5,6 +5,7 @@ import com.aivle.bookapp.domain.Likes;
 import com.aivle.bookapp.domain.User;
 import com.aivle.bookapp.exception.BookAlreadyExistsException;
 import com.aivle.bookapp.exception.BookNotFoundException;
+import com.aivle.bookapp.repository.AiRecommendationRepository;
 import com.aivle.bookapp.repository.BookRepository;
 import com.aivle.bookapp.repository.LikeRepository;
 import com.aivle.bookapp.repository.UserRepository;
@@ -24,6 +25,7 @@ public class BookService {
     private final BookRepository bookRepository;
     private final LikeRepository likeRepository;
     private final UserRepository userRepository;
+    private final AiRecommendationRepository aiRecommendationRepository;
     private final AiRecommendationService aiRecommendationService;
 
     @Transactional(readOnly = true)
@@ -127,8 +129,13 @@ public class BookService {
             throw new IllegalArgumentException("자신이 등록한 책만 삭제할 수 있습니다.");
         }
 
+        long deletedRecommendationCount = aiRecommendationRepository.deleteByRecommendedBook(book);
         likeRepository.deleteByBook(book);
         bookRepository.deleteById(id);
+
+        if (deletedRecommendationCount > 0) {
+            aiRecommendationService.updateAiRecommendation();
+        }
     }
 
     @Transactional(readOnly = true)
