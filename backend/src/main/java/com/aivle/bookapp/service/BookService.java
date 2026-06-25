@@ -60,9 +60,9 @@ public class BookService {
         if (bookRepository.findIdByTitleAndAuthor(book.getTitle(), realUser).isPresent()) {
             throw new BookAlreadyExistsException(book.getTitle());
         }
-
-        aiRecommendationService.refreshRecommendationAsync();
-        return bookRepository.save(book);
+        Book savedBook = bookRepository.save(book);
+        aiRecommendationService.updateAiRecommendation();
+        return savedBook;
     }
 
     @Transactional
