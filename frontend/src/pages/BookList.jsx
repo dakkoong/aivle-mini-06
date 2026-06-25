@@ -14,6 +14,8 @@ function BookList({
   onPageChange,
   onMoveToDetail,
   onMoveToCreate,
+  onRefreshBooks,
+  isRefreshingBooks = false,
 }) {
   const totalPages = Math.max(1, Math.ceil(books.length / BOOKS_PER_PAGE));
   const safeCurrentPage = Math.min(currentPage, totalPages);
@@ -93,6 +95,17 @@ function BookList({
                   <path d="M5 12h14" />
                 </svg>
                 <span>새 도서 등록</span>
+              </button>
+
+              <button
+                type="button"
+                className="refresh-books-button"
+                onClick={onRefreshBooks}
+                disabled={isRefreshingBooks}
+                aria-label="도서 목록 최신화"
+                title="도서 목록 최신화"
+              >
+                {"\u21bb"}
               </button>
             </div>
           </div>

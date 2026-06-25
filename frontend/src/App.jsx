@@ -68,6 +68,7 @@ function App() {
   const [listPage, setListPage] = useState(1);
   const [message, setMessage] = useState("");
   const [messageKey, setMessageKey] = useState(0);
+  const [isRefreshingBooks, setIsRefreshingBooks] = useState(false);
   const [aiRecommendations, setAiRecommendations] = useState([]);
   const [auth, setAuth] = useState(() => getStoredAuth());
   const [likedBookIds, setLikedBookIds] = useState(() => new Set());
@@ -166,6 +167,7 @@ function App() {
 
       setBooks(nextBooks);
       setSelectedId((prevId) => prevId ?? nextBooks[0]?.id ?? null);
+      return true;
     } catch (error) {
       console.error(error);
       setMessage("백엔드 서버 연결 상태를 확인해주세요.");
@@ -230,10 +232,22 @@ function App() {
     return () => window.clearTimeout(timerId);
   }, [message, messageKey]);
 
-  const showToast = (text) => {
+  const showToast = useCallback((text) => {
     setMessageKey((prevKey) => prevKey + 1);
     setMessage(text);
-  };
+  }, []);
+
+  const handleRefreshBooks = useCallback(async () => {
+    if (isRefreshingBooks) return;
+
+    setIsRefreshingBooks(true);
+    const isSuccess = await loadBooks();
+    setIsRefreshingBooks(false);
+
+    if (isSuccess) {
+      showToast("도서 목록을 최신화했습니다.");
+    }
+  }, [isRefreshingBooks, loadBooks, showToast]);
 
   const authFetch = useCallback(
     async (url, options = {}) => {
@@ -837,6 +851,8 @@ function App() {
           onMoveToList={moveToList}
           onMoveToDetail={moveToDetail}
           onMoveToCreate={moveToCreate}
+          onRefreshBooks={handleRefreshBooks}
+          isRefreshingBooks={isRefreshingBooks}
         />
       )}
 
@@ -855,6 +871,8 @@ function App() {
           onPageChange={setListPage}
           onMoveToDetail={moveToDetail}
           onMoveToCreate={moveToCreate}
+          onRefreshBooks={handleRefreshBooks}
+          isRefreshingBooks={isRefreshingBooks}
         />
       )}
 

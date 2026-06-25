@@ -7,6 +7,8 @@ function StartPage({
   onMoveToList,
   onMoveToDetail,
   onMoveToCreate,
+  onRefreshBooks,
+  isRefreshingBooks = false,
 }) {
   return (
     <>
@@ -40,6 +42,17 @@ function StartPage({
                   <path d="M5 12h14" />
                 </svg>
                 <span>새 도서 등록</span>
+              </button>
+
+              <button
+                type="button"
+                className="refresh-books-button"
+                onClick={onRefreshBooks}
+                disabled={isRefreshingBooks}
+                aria-label="도서 목록 최신화"
+                title="도서 목록 최신화"
+              >
+                {"\u21bb"}
               </button>
             </div>
           </div>
