@@ -107,8 +107,9 @@ public class BookService {
         if (bookRepository.findIdByTitleAndAuthor(book.getTitle(), realUser).isPresent()){
             throw new BookAlreadyExistsException(book.getTitle());
         }
-        aiRecommendationService.refreshRecommendationAsync();
-        return bookRepository.save(book);
+        Book savedBook = bookRepository.save(book);
+        aiRecommendationService.updateAiRecommendation();
+        return savedBook;
     }
 
     // 교안 p.166: PATCH 부분 수정 비즈니스 로직

@@ -65,15 +65,16 @@ public class AiRecommendationService implements ApplicationRunner {
 
         return result;
     }
-
-    @Async
-    public void refreshRecommendationAsync() {
-        updateAiRecommendation();
-    }
     
     @Scheduled(cron = "0 0 0 1 * *", zone = "Asia/Seoul")
+    @Async
     @Transactional
     public void updateAiRecommendation() {
+        try {
+            Thread.sleep(1000); 
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
 
         List<Book> books = bookRepository.findAll();
         if (books.isEmpty()) {
